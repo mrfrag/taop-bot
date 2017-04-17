@@ -31,10 +31,10 @@ public class BloggerApi {
 	}
 
 	public BloggerPost getPost(Long number) {
-		PostList result = restTemplate.getForObject(API_URL + "/search?q={q}&key={key}", PostList.class, ImmutableMap	.<String, String> builder()
-																														.put("q", number + QUERY_PATTERN)
-																														.put("key", key)
-																														.build());
+		PostList result = restTemplate.getForObject(API_URL + "/search?q={q}&key={key}", PostList.class, ImmutableMap.<String, String> builder()
+		                                                                                                             .put("q", number + QUERY_PATTERN)
+		                                                                                                             .put("key", key)
+		                                                                                                             .build());
 		if (CollectionUtils.isNotEmpty(result.getItems())) {
 			return result.getItems().get(0);
 		} else {

@@ -29,10 +29,10 @@ public class TelegramIntegrationTests {
 
 	@Test
 	public void testImageUrl() {
-		Optional<Message> response = telegramBotApi.sendMessageSync(SendPhoto	.builder()
-																				.chatId("101629747")
-																				.photo("https://raw.githubusercontent.com/golodnyj/TAOP/head/cover%20art/covers%20jpg/taop102.jpg")
-																				.build());
+		Optional<Message> response = telegramBotApi.sendMessageSync(SendPhoto.builder()
+		                                                                     .chatId("101629747")
+		                                                                     .photo("https://raw.githubusercontent.com/golodnyj/TAOP/head/cover%20art/covers%20jpg/taop102.jpg")
+		                                                                     .build());
 
 		assertTrue(response.isPresent());
 		assertTrue(CollectionUtils.isNotEmpty(response.get().getPhoto()));
@@ -40,10 +40,10 @@ public class TelegramIntegrationTests {
 
 	@Test
 	public void testAudioUrl() {
-		Optional<Message> response = telegramBotApi.sendMessageSync(SendAudio	.builder()
-																				.chatId("101629747")
-																				.audio("http://s67.podbean.com/pb/83166968692ccc738a2ae4ec67bddc6a/58a35844/data1/fs93/832311/uploads/103TheArtOfProgrammingBooksTrafficflow.mp3")
-																				.build());
+		Optional<Message> response = telegramBotApi.sendMessageSync(SendAudio.builder()
+		                                                                     .chatId("101629747")
+		                                                                     .audio("http://s67.podbean.com/pb/83166968692ccc738a2ae4ec67bddc6a/58a35844/data1/fs93/832311/uploads/103TheArtOfProgrammingBooksTrafficflow.mp3")
+		                                                                     .build());
 
 		assertTrue(response.isPresent());
 		assertNotNull(response.get().getAudio());
@@ -52,13 +52,13 @@ public class TelegramIntegrationTests {
 	@Test
 	public void testAudioFile() {
 		File file = new File(getClass().getClassLoader().getResource("audio_small.mp3").getFile());
-		Optional<Message> response = telegramBotApi.sendMessageSync(SendAudio	.builder()
-																				.chatId("101629747")
-																				.file(file)
-																				.duration(1000)
-																				.title("символс")
-																				.performer("русске")
-																				.build());
+		Optional<Message> response = telegramBotApi.sendMessageSync(SendAudio.builder()
+		                                                                     .chatId("101629747")
+		                                                                     .file(file)
+		                                                                     .duration(1000)
+		                                                                     .title("символс")
+		                                                                     .performer("русске")
+		                                                                     .build());
 
 		assertTrue(response.isPresent());
 		assertNotNull(response.get().getAudio());

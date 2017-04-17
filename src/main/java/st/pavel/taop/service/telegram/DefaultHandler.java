@@ -12,7 +12,7 @@ import st.pavel.taop.components.Messages;
 
 @Component
 public class DefaultHandler implements DefaultMessageHandler {
-	
+
 	@Autowired
 	private Messages messages;
 

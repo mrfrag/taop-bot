@@ -36,9 +36,9 @@ public class BloggerService {
 		if (latestUpdateTimeVar.get() == null) {
 			latestUpdateTimeVar.set(OffsetDateTime.of(2017, 4, 16, 0, 0, 0, 0, ZoneOffset.UTC));
 		}
-		bloggerApi	.listRecentPosts().getItems().stream()
-					.filter(p -> p.getTitle().contains(TAOP_POST_TITLE) && p.getUpdated().isAfter(latestUpdateTimeVar.get()))
-					.forEach(p -> taopBotService.serveUpdate(p));
+		bloggerApi.listRecentPosts().getItems().stream()
+		          .filter(p -> p.getTitle().contains(TAOP_POST_TITLE) && p.getUpdated().isAfter(latestUpdateTimeVar.get()))
+		          .forEach(p -> taopBotService.serveUpdate(p));
 		latestUpdateTimeVar.set(OffsetDateTime.now());
 	}
 

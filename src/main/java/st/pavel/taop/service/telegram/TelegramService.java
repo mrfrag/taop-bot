@@ -50,10 +50,10 @@ public class TelegramService {
 		Optional<Long> update = chat.pollBlogUpdate();
 		if (update.isPresent()) {
 			return sendChatAction(SendChatAction.builder()
-												.action(ActionTypes.TYPING)
-												.chatId(chatId.toString())
-												.build())
-															.setCallback(message -> taopBotService.serveIssuePollCommand(update.get(), chatId));
+			                                    .action(ActionTypes.TYPING)
+			                                    .chatId(chatId.toString())
+			                                    .build())
+			                                             .setCallback(message -> taopBotService.serveIssuePollCommand(update.get(), chatId));
 		} else {
 			return sendMessage(messages.get("chat.empty"), updateEvent);
 		}

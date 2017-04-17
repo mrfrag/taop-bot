@@ -12,14 +12,14 @@ public class Mapper extends ConfigurableMapper {
 		factory.getConverterFactory().registerConverter("urlNumberConverter", new UrlNumberConverter());
 		factory.getConverterFactory().registerConverter("offsetDateTimeConverter", new OffsetDateTimeConverter());
 
-		factory	.classMap(BloggerPost.class, TaopPost.class)
-				.mapNulls(false)
-				.mapNullsInReverse(false)
-				.fieldMap("updated", "created").converter("offsetDateTimeConverter").add()
-				.fieldMap("url", "number").converter("urlNumberConverter").aToB().add()
-				.fieldMap("url", "number").bToA().exclude().add()
-				.byDefault()
-				.register();
+		factory.classMap(BloggerPost.class, TaopPost.class)
+		       .mapNulls(false)
+		       .mapNullsInReverse(false)
+		       .fieldMap("updated", "created").converter("offsetDateTimeConverter").add()
+		       .fieldMap("url", "number").converter("urlNumberConverter").aToB().add()
+		       .fieldMap("url", "number").bToA().exclude().add()
+		       .byDefault()
+		       .register();
 	}
 
 }

@@ -54,8 +54,8 @@ public class GitHubGrabber {
 
 	public TaopPost downloadContent(TaopPost post) throws Exception {
 		return getGitHubContent(post, post.getCreated().getYear())
-																	.orElseGet(() -> getGitHubContent(post, post.getCreated().getYear() - 1)
-																																			.orElseGet(() -> convertContent(post)));
+		                                                          .orElseGet(() -> getGitHubContent(post, post.getCreated().getYear() - 1)
+		                                                                                                                                  .orElseGet(() -> convertContent(post)));
 	}
 
 	private String buildGitHubResourceUrl(String path, @NotNull String template, Object... args) {
@@ -72,10 +72,10 @@ public class GitHubGrabber {
 			if (response.getStatusCode() == HttpStatus.OK.value()) {
 				post.setContent(response.getResponseBody());
 				try (BufferedReader reader = new BufferedReader(new InputStreamReader(response.getResponseBodyAsStream()))) {
-					reader	.lines()
-							.filter(line -> line.startsWith(PATRONS_SUFFIX))
-							.findFirst()
-							.ifPresent(line -> updatePatronsList(post.getNumber(), line));
+					reader.lines()
+					      .filter(line -> line.startsWith(PATRONS_SUFFIX))
+					      .findFirst()
+					      .ifPresent(line -> updatePatronsList(post.getNumber(), line));
 				}
 				post.setCover(buildGitHubResourceUrl(POST_COVER_PATH_URL, POST_COVER_URL_TEMPLATE, post.getNumber()));
 				return Optional.of(post);
@@ -116,10 +116,10 @@ public class GitHubGrabber {
 
 		Remark remark = new Remark(options);
 
-		pElements	.stream()
-					.filter(element -> element.hasText() && element.text().startsWith(PATRONS_SUFFIX))
-					.findFirst()
-					.ifPresent(element -> updatePatronsList(post.getNumber(), element.text()));
+		pElements.stream()
+		         .filter(element -> element.hasText() && element.text().startsWith(PATRONS_SUFFIX))
+		         .findFirst()
+		         .ifPresent(element -> updatePatronsList(post.getNumber(), element.text()));
 
 		post.setContent(remark.convert(document));
 		return post;

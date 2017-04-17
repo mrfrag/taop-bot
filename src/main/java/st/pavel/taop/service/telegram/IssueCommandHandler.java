@@ -41,10 +41,10 @@ public class IssueCommandHandler implements ConditionMessageHandler {
 			return sendMessage(messages.get("issue.before.hundred"), event);
 		} else {
 			return sendChatAction(SendChatAction.builder()
-												.chatId(chatId.toString())
-												.action(ActionTypes.TYPING)
-												.build())
-															.setCallback(message -> taopBotService.serveIssueCommand(number, chatId));
+			                                    .chatId(chatId.toString())
+			                                    .action(ActionTypes.TYPING)
+			                                    .build())
+			                                             .setCallback(message -> taopBotService.serveIssueCommand(number, chatId));
 		}
 	}
 

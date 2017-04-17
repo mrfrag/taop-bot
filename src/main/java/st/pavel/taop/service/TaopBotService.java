@@ -74,9 +74,9 @@ public class TaopBotService {
 		try {
 			TaopPost taopPost = mapper.map(bloggerPost, TaopPost.class);
 			Map<Boolean, List<Chat>> chats = StreamSupport.stream(chatRepository.findAll().spliterator(), false).collect(Collectors.partitioningBy(chat -> chat.isMuted()));
-			chats.get(false).forEach(chat -> serveIssue(taopPost, ChatRegistration	.builder()
-																					.chatId(chat.getId())
-																					.build()));
+			chats.get(false).forEach(chat -> serveIssue(taopPost, ChatRegistration.builder()
+			                                                                      .chatId(chat.getId())
+			                                                                      .build()));
 			chats.get(true).forEach(chat -> chat.pushBlogUpdate(taopPost.getNumber()));
 		} catch (Exception e) {
 			log.error("Unable to serve podcast update.", e);
@@ -92,9 +92,9 @@ public class TaopBotService {
 	public void serveIssuePollCommand(final Long number, final Long chatId) {
 		int unreadIssuesCount = chatRepository.findOne(chatId).getBlogUpdates().size();
 		doServeIssueCommand(number, chatId, id -> telegramBotApi.sendMessageSync(SendMessage.builder()
-																							.chatId(chatId.toString())
-																							.text(messages.getCountLocalized("chat.unread", unreadIssuesCount))
-																							.build()));
+		                                                                                    .chatId(chatId.toString())
+		                                                                                    .text(messages.getCountLocalized("chat.unread", unreadIssuesCount))
+		                                                                                    .build()));
 	}
 
 	private void serveIssue(TaopPost taopPost, ChatRegistration registration) {
@@ -146,44 +146,44 @@ public class TaopBotService {
 		BloggerPost bloggerPost = null;
 		try {
 			bloggerPost = bloggerApi.getPost(number);
-			telegramBotApi.sendMessageSync(SendMessage	.builder()
-														.chatId(chatId.toString())
-														.text(messages.get("issue.processing"))
-														.build());
+			telegramBotApi.sendMessageSync(SendMessage.builder()
+			                                          .chatId(chatId.toString())
+			                                          .text(messages.get("issue.processing"))
+			                                          .build());
 		} catch (Exception e) {
 			log.error("Error while serving issue command.", e);
 
-			telegramBotApi.sendMessageAsync(SendMessage	.builder()
-														.chatId(chatId.toString())
-														.text(messages.get("issue.error"))
-														.build());
+			telegramBotApi.sendMessageAsync(SendMessage.builder()
+			                                           .chatId(chatId.toString())
+			                                           .text(messages.get("issue.error"))
+			                                           .build());
 
 			return;
 		}
 		serveIssue(mapper.map(bloggerPost, TaopPost.class), ChatRegistration.builder()
-																			.chatId(chatId)
-																			.callback(callback)
-																			.notifyOnFail(true)
-																			.build());
+		                                                                    .chatId(chatId)
+		                                                                    .callback(callback)
+		                                                                    .notifyOnFail(true)
+		                                                                    .build());
 
 	}
 
 	private void sendPost(TaopPost post, Long chatId) {
 		String chatIdString = chatId.toString();
 
-		telegramBotApi.sendMessageSync(SendMessage	.builder()
-													.chatId(chatIdString)
-													.text(post.getTitle())
-													.build());
+		telegramBotApi.sendMessageSync(SendMessage.builder()
+		                                          .chatId(chatIdString)
+		                                          .text(post.getTitle())
+		                                          .build());
 		telegramBotApi.sendMessageSync(SendPhoto.builder()
-												.chatId(chatIdString)
-												.photo(post.getCover())
-												.build());
-		telegramBotApi.sendMessageSync(SendMessage	.builder()
-													.chatId(chatIdString)
-													.text(post.getContent())
-													.parseMode(ParseModes.MARKDOWN)
-													.build());
+		                                        .chatId(chatIdString)
+		                                        .photo(post.getCover())
+		                                        .build());
+		telegramBotApi.sendMessageSync(SendMessage.builder()
+		                                          .chatId(chatIdString)
+		                                          .text(post.getContent())
+		                                          .parseMode(ParseModes.MARKDOWN)
+		                                          .build());
 		sendAudio(post, chatId);
 
 	}
@@ -196,14 +196,14 @@ public class TaopBotService {
 	}
 
 	private void sendPostErrorBroadcast(TaopPost taopPost) {
-		StreamSupport	.stream(issueRequestsRegistry.evict(taopPost.getNumber()).spliterator(), false)
-						.filter(ChatRegistration::isNotifyOnFail)
-						.forEach(registration -> {
-							telegramBotApi.sendMessageAsync(SendMessage	.builder()
-																		.chatId(registration.getChatId().toString())
-																		.text(messages.get("issue.error"))
-																		.build());
-						});
+		StreamSupport.stream(issueRequestsRegistry.evict(taopPost.getNumber()).spliterator(), false)
+		             .filter(ChatRegistration::isNotifyOnFail)
+		             .forEach(registration -> {
+			             telegramBotApi.sendMessageAsync(SendMessage.builder()
+			                                                        .chatId(registration.getChatId().toString())
+			                                                        .text(messages.get("issue.error"))
+			                                                        .build());
+		             });
 	}
 
 	private void sendAudio(TaopPost post, Long chatId) {
