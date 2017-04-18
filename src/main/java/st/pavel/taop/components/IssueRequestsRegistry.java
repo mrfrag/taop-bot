@@ -7,8 +7,9 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
 
+import org.mapdb.DB;
+import org.mapdb.Serializer;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import lombok.AllArgsConstructor;
@@ -20,9 +21,13 @@ import lombok.Setter;
 @Component
 public class IssueRequestsRegistry {
 
-	@Autowired
-	@Qualifier("issueRequestsMap")
 	private Map<Long, Set<ChatRegistration>> issueRequestsMap;
+
+	@SuppressWarnings("unchecked")
+	@Autowired
+	public IssueRequestsRegistry(DB db) {
+		issueRequestsMap = db.hashMap("issueRequestsMap", Serializer.LONG, Serializer.JAVA).createOrOpen();
+	}
 
 	public synchronized boolean register(Long number, ChatRegistration registration) {
 		if (number == null) {

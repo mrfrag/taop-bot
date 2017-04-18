@@ -8,7 +8,6 @@ import java.time.OffsetDateTime;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.mapdb.Atomic.Var;
 import org.mapdb.DBMaker;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -19,9 +18,7 @@ import com.ning.http.client.AsyncHttpClient.BoundRequestBuilder;
 import com.ning.http.client.ListenableFuture;
 import com.ning.http.client.Response;
 
-import st.pavel.taop.domain.PatronsRecord;
 import st.pavel.taop.domain.TaopPost;
-import st.pavel.taop.misc.SerializerPatronsRecord;
 
 public class GitHubGrabberTests {
 
@@ -51,7 +48,7 @@ public class GitHubGrabberTests {
 	@Test
 	public void test() throws Exception {
 
-		Var<PatronsRecord> patronsRecord = DBMaker.memoryDB().make().atomicVar("patronsRecord", new SerializerPatronsRecord()).createOrOpen();
+		PatronsRegistry patronsRegistry = new PatronsRegistry(DBMaker.memoryDB().make());
 
 		when(response.getStatusCode()).thenReturn(404);
 		when(future.get()).thenReturn(response);
@@ -61,7 +58,7 @@ public class GitHubGrabberTests {
 		GitHubGrabber grabber = new GitHubGrabber();
 		grabber.init();
 
-		setField(grabber, "patronsRecord", patronsRecord);
+		setField(grabber, "patronsRegistry", patronsRegistry);
 		setField(grabber, "httpClient", httpClient);
 
 		TaopPost post = new TaopPost();
@@ -72,7 +69,7 @@ public class GitHubGrabberTests {
 		grabber.downloadContent(post);
 
 		assertEquals(EXPECTED_IMG_URL, post.getCover());
-		assertEquals(EXPECTED_PATRONS_LIST, patronsRecord.get().getPatrons());
+		assertEquals(EXPECTED_PATRONS_LIST, patronsRegistry.get());
 
 	}
 

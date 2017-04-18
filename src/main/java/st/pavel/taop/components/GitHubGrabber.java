@@ -13,9 +13,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
-import org.mapdb.Atomic.Var;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
@@ -25,7 +22,6 @@ import com.ning.http.client.Response;
 import com.overzealous.remark.Options;
 import com.overzealous.remark.Remark;
 
-import st.pavel.taop.domain.PatronsRecord;
 import st.pavel.taop.domain.TaopPost;
 
 @Component
@@ -41,9 +37,7 @@ public class GitHubGrabber {
 
 	private static final String PATRONS_SUFFIX = "Благодарности патронам:";
 
-	@Autowired
-	@Qualifier("patronsRecord")
-	private Var<PatronsRecord> patronsRecord;
+	private PatronsRegistry patronsRegistry;
 
 	private AsyncHttpClient httpClient;
 
@@ -75,7 +69,7 @@ public class GitHubGrabber {
 					reader.lines()
 					      .filter(line -> line.startsWith(PATRONS_SUFFIX))
 					      .findFirst()
-					      .ifPresent(line -> updatePatronsList(post.getNumber(), line));
+					      .ifPresent(line -> patronsRegistry.update(post.getNumber(), StringUtils.trim(StringUtils.substringAfter(line, PATRONS_SUFFIX))));
 				}
 				post.setCover(buildGitHubResourceUrl(POST_COVER_PATH_URL, POST_COVER_URL_TEMPLATE, post.getNumber()));
 				return Optional.of(post);
@@ -84,13 +78,6 @@ public class GitHubGrabber {
 			}
 		} catch (InterruptedException | ExecutionException | IOException e) {
 			return Optional.empty();
-		}
-	}
-
-	private void updatePatronsList(Long number, String text) {
-		PatronsRecord oldRecord = patronsRecord.get();
-		if (oldRecord == null || number > oldRecord.getIssueNumber()) {
-			patronsRecord.set(new PatronsRecord(number, StringUtils.trim(StringUtils.substringAfter(text, PATRONS_SUFFIX))));
 		}
 	}
 
@@ -119,7 +106,7 @@ public class GitHubGrabber {
 		pElements.stream()
 		         .filter(element -> element.hasText() && element.text().startsWith(PATRONS_SUFFIX))
 		         .findFirst()
-		         .ifPresent(element -> updatePatronsList(post.getNumber(), element.text()));
+		         .ifPresent(element -> patronsRegistry.update(post.getNumber(), StringUtils.trim(StringUtils.substringAfter(element.text(), PATRONS_SUFFIX))));
 
 		post.setContent(remark.convert(document));
 		return post;

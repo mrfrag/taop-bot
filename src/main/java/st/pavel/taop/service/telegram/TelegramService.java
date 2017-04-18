@@ -5,9 +5,7 @@ import static ru.skuptsov.telegram.bot.platform.client.command.MessageResponse.s
 
 import java.util.Optional;
 
-import org.mapdb.Atomic.Var;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 
 import ru.skuptsov.telegram.bot.platform.client.command.MessageResponse;
 import ru.skuptsov.telegram.bot.platform.handler.annotation.MessageHandler;
@@ -16,8 +14,8 @@ import ru.skuptsov.telegram.bot.platform.model.UpdateEvent;
 import ru.skuptsov.telegram.bot.platform.model.api.methods.send.SendChatAction;
 import ru.skuptsov.telegram.bot.platform.model.api.methods.send.SendChatAction.ActionTypes;
 import st.pavel.taop.components.Messages;
+import st.pavel.taop.components.PatronsRegistry;
 import st.pavel.taop.domain.Chat;
-import st.pavel.taop.domain.PatronsRecord;
 import st.pavel.taop.repository.ChatRepository;
 import st.pavel.taop.service.TaopBotService;
 
@@ -40,8 +38,7 @@ public class TelegramService {
 	private Messages messages;
 
 	@Autowired
-	@Qualifier("patronsRecord")
-	private Var<PatronsRecord> patronsRecord;
+	private PatronsRegistry patronsRegistry;
 
 	@MessageMapping(text = "/pop")
 	public MessageResponse refreshFeed(UpdateEvent updateEvent) {
@@ -88,7 +85,7 @@ public class TelegramService {
 
 	@MessageMapping(text = "/patrons")
 	public MessageResponse handlePatronsCommand(UpdateEvent updateEvent) {
-		return sendMessage(patronsRecord.get().getPatrons(), updateEvent);
+		return sendMessage(patronsRegistry.get(), updateEvent);
 	}
 
 }

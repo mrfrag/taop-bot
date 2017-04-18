@@ -54,22 +54,6 @@ public class TaopbotConfiguration {
 		return DBMaker.fileDB(DB_NAME).checksumHeaderBypass().closeOnJvmShutdown().make();
 	}
 
-	@Bean("updateTimeStore")
-	public Var<OffsetDateTime> updateTimeStore(DB mapDb) {
-		return mapDb.atomicVar("updateTime", new SerializerDateTime()).createOrOpen();
-	}
-
-	@SuppressWarnings("unchecked")
-	@Bean("issueRequestsMap")
-	public Map<Long, Set<ChatRegistration>> issueRequestsMap(DB mapDb) {
-		return mapDb.hashMap("issueRequestsMap", Serializer.LONG, Serializer.JAVA).createOrOpen();
-	}
-
-	@Bean("patronsRecord")
-	public Var<PatronsRecord> patronsRecord(DB mapDb) {
-		return mapDb.atomicVar("patronsRecord", new SerializerPatronsRecord()).createOrOpen();
-	}
-
 	@Bean
 	public Mapper mapper() {
 		return new Mapper();
